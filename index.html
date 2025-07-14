@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qual é o seu Exercício? - Ministério da Saúde</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --verde-azulado: #1e8a8a;
+            --azul-claro: #8fc1e3;
+            --verde-org: #88b04b;
+            --branco: #ffffff;
+            --cinza-claro: #f5f5f5;
+            --cinza-escuro: #333333;
+            --azul-profundo: #006d8f;
+            --verde-suave: #4caf50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+            color: var(--cinza-escuro);
+            line-height: 1.6;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--verde-azulado), var(--azul-profundo));
+            color: var(--branco);
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 1px, transparent 2px),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.1) 1px, transparent 2px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            background: rgba(255,255,255,0.2);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .card {
+            background-color: var(--branco);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-top: 8px solid var(--verde-azulado);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background: var(--azul-claro);
+            border-radius: 0 0 0 100%;
+            z-index: 0;
+            opacity: 0.1;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            color: var(--azul-profundo);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        label i {
+            color: var(--verde-azulado);
+            font-size: 1.2rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--azul-claro);
+            border-radius: 8px;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            background-color: var(--cinza-claro);
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--verde-azulado);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 138, 138, 0.2);
+            background-color: white;
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--verde-azulado), var(--azul-profundo));
+            color: var(--branco);
+            border: none;
+            border-radius: 8px;
+            padding: 16px 32px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 10px rgba(30, 138, 138, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right, 
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.3) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            transform: rotate(30deg);
+            transition: all 0.6s;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(30, 138, 138, 0.4);
+        }
+        
+        button:hover::after {
+            left: 100%;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(to right, #f5f5f5, #e0e0e0);
+            color: var(--cinza-escuro);
+            margin-top: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .reset-btn:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .result-section {
+            display: none;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--azul-claro);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-content {
+            background: linear-gradient(to bottom, #f8fdff, #f0f9fc);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--azul-claro);
+            position: relative;
+        }
+        
+        .profile-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--verde-suave);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .recommendation {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed var(--azul-claro);
+        }
+        
+        .recommendation:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .recommendation h3 {
+            color: var(--verde-azulado);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .recommendation h3 i {
+            background: var(--azul-claro);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--azul-profundo);
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin-top: 2.5rem;
+        }
+        
+        .tip-card {
+            background: linear-gradient(135deg, var(--branco), var(--cinza-claro));
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(143, 193, 227, 0.3);
+            transition: transform 0.3s;
+        }
+        
+        .tip-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .tip-card h3 {
+            color: var(--azul-profundo);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .tip-card h3 i {
+            color: var(--verde-azulado);
+            font-size: 1.4rem;
+        }
+        
+        .warning {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffc107;
+            padding: 1.5rem;
+            margin-top: 1.8rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 1.05rem;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--azul-profundo), #004d6f);
+            color: var(--branco);
+            padding: 3rem 1rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .references {
+            margin-top: 1.8rem;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.85);
+            text-align: left;
+            background: rgba(0,0,0,0.15);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .references p {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--azul-claro);
+            transform: translateY(-2px);
+        }
+        
+        @media (min-width: 768px) {
+            .form-row {
+                display: flex;
+                gap: 1.8rem;
+            }
+            
+            .form-row .form-group {
+                flex: 1;
+                margin-bottom: 0;
+            }
+            
+            h1 {
+                font-size: 3.2rem;
+            }
+            
+            .header-content {
+                padding: 1rem;
+            }
+        }
+        
+        .health-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: var(--azul-claro);
+            border-radius: 50%;
+            margin-right: 10px;
+            color: var(--azul-profundo);
+        }
+        
+        .diabetes-section {
+            background: rgba(143, 193, 227, 0.1);
+            border-left: 4px solid var(--verde-suave);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-pattern"></div>
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h1>Qual é o seu Exercício?</h1>
+            </div>
+            <p class="subtitle">Descubra a atividade física e alimentação ideais para o seu perfil de acordo com as diretrizes do Ministério da Saúde</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2><i class="fas fa-running health-icon"></i> Encontre a atividade física ideal para você</h2>
+            <p>Cada pessoa tem um corpo, uma história e necessidades diferentes. O exercício ideal para você depende do seu objetivo, saúde e rotina.</p>
+            
+            <form id="exercise-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="weight"><i class="fas fa-weight"></i> Peso (kg)</label>
+                        <input type="number" id="weight" min="30" max="200" required placeholder="Ex: 70">
+                    </div>
+                    <div class="form-group">
+                        <label for="height"><i class="fas fa-ruler-vertical"></i> Altura (cm)</label>
+                        <input type="number" id="height" min="100" max="250" required placeholder="Ex: 170">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="age"><i class="fas fa-birthday-cake"></i> Idade</label>
+                        <input type="number" id="age" min="10" max="120" required placeholder="Ex: 35">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender"><i class="fas fa-venus-mars"></i> Sexo</label>
+                        <select id="gender" required>
+                            <option value="">Selecione seu sexo</option>
+                            <option value="male">Masculino</option>
+                            <option value="female">Feminino</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="diabetes"><i class="fas fa-file-medical"></i> Você é diabético?</label>
+                    <select id="diabetes" required>
+                        <option value="none">Não sou diabético</option>
+                        <option value="type1">Sim, Diabetes Tipo 1</option>
+                        <option value="type2">Sim, Diabetes Tipo 2</option>
+                    </select>
+                </div>
+                
+                <button type="submit">
+                    <i class="fas fa-search"></i> Descobrir meu exercício ideal
+                </button>
+            </form>
+            
+            <div class="result-section" id="result-section">
+                <h2><i class="fas fa-clipboard-list health-icon"></i> Recomendações Personalizadas</h2>
+                
+                <div class="result-content">
+                    <div class="profile-badge" id="profile-badge">Perfil de Saúde</div>
+                    
+                    <div id="profile-description"></div>
+                    
+                    <div class="recommendation">
+                        <h3><i class="fas fa-dumbbell"></i> Exercícios Recomendados</h3>
+                        <div id="exercise-recommendation"></div>
+                    </div>
+                    
+                    <div class="recommendation">
+                        <h3><i class="fas fa-apple-alt"></i> Orientações de Alimentação</h3>
+                        <div id="diet-recommendation"></div>
+                    </div>
+                    
+                    <div id="diabetes-recommendation" class="diabetes-section"></div>
+                    
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h3><i class="fas fa-tint"></i> Hidratação</h3>
+                            <p>Beba água antes, durante e após o exercício. A desidratação reduz o desempenho e aumenta o risco de lesões. Consuma pelo menos 2 litros de água por dia.</p>
+                        </div>
+                        
+                        <div class="tip-card">
+                            <h3><i class="fas fa-bed"></i> Sono</h3>
+                            <p>Dormir 7-8 horas por noite potencializa resultados: regula hormônios e recupera músculos. A privação de sono aumenta o risco de lesões e reduz a performance.</p>
+                        </div>
+                        
+                        <div class="tip-card">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Sinais de Alerta</h3>
+                            <p>Interrompa a atividade imediatamente se sentir:</p>
+                            <ul>
+                                <li>Tontura ou vertigem</li>
+                                <li>Dor no peito ou palpitações</li>
+                                <li>Falta de ar intensa</li>
+                                <li>Visão turva ou desorientação</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="warning">
+                        <p><strong><i class="fas fa-exclamation-circle"></i> Importante:</strong> Este é apenas um guia inicial baseado nas diretrizes do Ministério da Saúde. Antes de iniciar qualquer atividade física, consulte um médico para avaliação individualizada e um educador físico para orientação adequada.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="reset-btn" class="reset-btn">
+                <i class="fas fa-redo"></i> Fazer nova consulta
+            </button>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <p>Baseado nas diretrizes oficiais do Ministério da Saúde do Brasil</p>
+            
+            <div class="references">
+                <p><strong>Referências Bibliográficas:</strong></p>
+                <p>BRASIL, Ministério da Saúde. Guia de Atividade Física para a População Brasileira. Brasília: Ministério da Saúde, 2021.</p>
+                <p>BRASIL, Ministério da Saúde. Guia Alimentar para a População Brasileira. 2. ed. Brasília: Ministério da Saúde, 2014.</p>
+                <p>Ministério da Saúde. Estratégias para o cuidado da pessoa com doença crônica: diabetes mellitus. Cadernos de Atenção Básica, n° 36. 2013.</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-book"></i> Guia Completo</a>
+                <a href="#"><i class="fas fa-download"></i> Materiais</a>
+                <a href="#"><i class="fas fa-info-circle"></i> Sobre</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.getElementById('exercise-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obter valores do formulário
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value) / 100; // converter para metros
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const diabetes = document.getElementById('diabetes').value;
+            
+            // Calcular IMC
+            const imc = weight / (height * height);
+            let imcCategory = '';
+            
+            if (imc < 18.5) imcCategory = 'Abaixo do peso';
+            else if (imc < 25) imcCategory = 'Peso normal';
+            else if (imc < 30) imcCategory = 'Sobrepeso';
+            else imcCategory = 'Obesidade';
+            
+            // Determinar perfil com base nos dados
+            let profile = '';
+            let exerciseRec = '';
+            let dietRec = '';
+            let diabetesRec = '';
+            let profileDesc = '';
+            let profileBadge = '';
+            
+            // Determinar perfil principal
+            if (age >= 60) {
+                // Perfil Idoso
+                profile = 'idoso';
+                profileBadge = 'Idoso';
+                profileDesc = `<p>Com ${age} anos, seu foco deve ser manter a independência, equilíbrio e força. O exercício é essencial para preservar a massa muscular e a saúde óssea.</p>`;
+                
+                exerciseRec = `
+                    <p><strong>Objetivo:</strong> Manter independência, equilíbrio e força.</p>
+                    <p><strong>Exercícios indicados pelo Ministério da Saúde:</strong></p>
+                    <ul>
+                        <li><strong>Alongamento diário:</strong> 10-15 minutos todos os dias para manter a flexibilidade</li>
+                        <li><strong>Caminhada regular:</strong> 20-30 minutos/dia, 5 dias por semana</li>
+                        <li><strong>Musculação leve:</strong> Com pesos leves ou bandas elásticas, 2-3 vezes/semana</li>
+                        <li><strong>Dança de baixo impacto:</strong> Como zumba gold ou dança de salão adaptada</li>
+                        <li><strong>Pilates ou yoga adaptado:</strong> Para melhorar equilíbrio e consciência corporal</li>
+                    </ul>
+                `;
+                
+                dietRec = `
+                    <p><strong>Orientações nutricionais do Guia Alimentar:</strong></p>
+                    <ul>
+                        <li>Consuma proteínas em todas as refeições (carnes magras, ovos, leguminosas) para preservar massa muscular</li>
+                        <li>Priorize alimentos ricos em cálcio e vitamina D (leite, queijos, iogurte, peixes) para saúde óssea</li>
+                        <li>Mantenha hidratação adequada (8 copos de água/dia), mesmo sem sede</li>
+                        <li>Inclua fibras (frutas, verduras, cereais integrais) para saúde digestiva</li>
+                        <li>Fracione as refeições em menores volumes (5-6 refeições/dia)</li>
+                    </ul>
+                `;
+            } else if (imc >= 30) {
+                // Perfil Obesidade
+                profile = 'obesidade';
+                profileBadge = 'Obesidade';
+                profileDesc = `<p>Com IMC de ${imc.toFixed(1)} (${imcCategory}), seu objetivo deve ser emagrecer com saúde, preservando a massa muscular e melhorando a capacidade cardiorrespiratória.</p>`;
+                
+                exerciseRec = `
+                    <p><strong>Objetivo:</strong> Redução de peso com saúde, preservação de massa muscular.</p>
+                    <p><strong>Exercícios indicados pelo Ministério da Saúde:</strong></p>
+                    <ul>
+                        <li><strong>Caminhada progressiva:</strong> Comece com 10-15 minutos/dia, aumentando 5 minutos por semana até 45 minutos</li>
+                        <li><strong>Bicicleta ergométrica:</strong> 20-30 minutos/sessão, 4 vezes/semana</li>
+                        <li><strong>Hidroginástica:</strong> Para reduzir impacto nas articulações, 3 vezes/semana</li>
+                        <li><strong>Musculação leve:</strong> Para preservar massa muscular, 2-3 vezes/semana</li>
+                        <li><strong>Alongamentos:</strong> Diários para melhorar flexibilidade</li>
+                    </ul>
+                `;
+                
+                dietRec = `
+                    <p><strong>Orientações nutricionais do Guia Alimentar:</strong></p>
+                    <ul>
+                        <li>Priorize alimentos in natura e minimamente processados</li>
+                        <li>Consuma proteínas magras (peito de frango, peixes, ovos, tofu) em todas as refeições</li>
+                        <li>Inclua fibras (vegetais crus, frutas com casca, grãos integrais) para aumentar saciedade</li>
+                        <li>Reduza gradualmente o consumo de açúcares e gorduras saturadas</li>
+                        <li>Mantenha hidratação adequada (2-3 litros de água/dia)</li>
+                        <li>Prefira preparações cozidas, assadas ou grelhadas em vez de frituras</li>
+                    </ul>
+                `;
+            } else if (imc < 18.5) {
+                // Perfil Abaixo do peso
+                profile = 'abaixo-peso';
+                profileBadge = 'Abaixo do peso';
+                profileDesc = `<p>Com IMC de ${imc.toFixed(1)} (${imcCategory}), seu objetivo deve ser ganhar massa magra de forma saudável e melhorar sua força e resistência.</p>`;
+                
+                exerciseRec = `
+                    <p><strong>Objetivo:</strong> Ganho de massa magra e melhora da força.</p>
+                    <p><strong>Exercícios indicados pelo Ministério da Saúde:</strong></p>
+                    <ul>
+                        <li><strong>Musculação com carga progressiva:</strong> 3-4 vezes/semana, com aumento gradual de carga</li>
+                        <li><strong>Treinos de força:</strong> Com pesos livres e máquinas, focando em grandes grupos musculares</li>
+                        <li><strong>Exercícios compostos:</strong> Agachamento, supino, levantamento terra, remada</li>
+                        <li><strong>Descanso adequado:</strong> 48h de repouso para o mesmo grupo muscular</li>
+                        <li><strong>Atividades aeróbicas moderadas:</strong> 2-3 vezes/semana para saúde cardiovascular</li>
+                    </ul>
+                `;
+                
+                dietRec = `
+                    <p><strong>Orientações nutricionais do Guia Alimentar:</strong></p>
+                    <ul>
+                        <li>Aumente o consumo calórico com alimentos nutritivos e densos em nutrientes</li>
+                        <li>Consuma proteínas de alta qualidade (carnes, ovos, leite, leguminosas) em todas as refeições</li>
+                        <li>Inclua carboidratos complexos (arroz integral, batata-doce, aveia, pães integrais)</li>
+                        <li>Gorduras saudáveis (abacate, castanhas, azeite, sementes) em quantidades adequadas</li>
+                        <li>Refeições frequentes (5-6 vezes/dia) para facilitar o consumo calórico</li>
+                    </ul>
+                `;
+            } else {
+                // Perfil Peso normal
+                profile = 'normal';
+                profileBadge = 'Peso normal';
+                profileDesc = `<p>Com IMC de ${imc.toFixed(1)} (${imcCategory}), seu objetivo deve ser manter a saúde, melhorar o condicionamento físico e prevenir doenças crônicas.</p>`;
+                
+                exerciseRec = `
+                    <p><strong>Objetivo:</strong> Manutenção da saúde e melhora do condicionamento físico.</p>
+                    <p><strong>Exercícios indicados pelo Ministério da Saúde:</strong></p>
+                    <ul>
+                        <li><strong>Exercícios aeróbicos:</strong> 150 minutos/semana de atividades como caminhada, corrida, ciclismo</li>
+                        <li><strong>Treino de força:</strong> Musculação 2-3 vezes/semana para todos os grupos musculares</li>
+                        <li><strong>Atividades recreativas:</strong> Dança, esportes, natação - 1-2 vezes/semana</li>
+                        <li><strong>Exercícios de flexibilidade:</strong> Alongamento ou yoga 2-3 vezes/semana</li>
+                        <li><strong>Atividades de equilíbrio:</strong> Principalmente para pessoas acima de 40 anos</li>
+                    </ul>
+                `;
+                
+                dietRec = `
+                    <p><strong>Orientações nutricionais do Guia Alimentar:</strong></p>
+                    <ul>
+                        <li>Baseie sua alimentação em alimentos in natura e minimamente processados</li>
+                        <li>Consuma diariamente variedade de frutas, legumes e verduras (pelo menos 5 porções)</li>
+                        <li>Inclua proteínas magras (peixe, frango, ovos, leguminosas) em pelo menos duas refeições</li>
+                        <li>Prefira carboidratos integrais (arroz integral, pão integral) e gorduras saudáveis (azeite, castanhas)</li>
+                        <li>Limite o consumo de alimentos ultraprocessados (biscoitos, salgadinhos, refrigerantes)</li>
+                    </ul>
+                `;
+            }
+            
+            // Recomendações específicas para diabetes
+            if (diabetes !== 'none') {
+                const diabetesType = diabetes === 'type1' ? 'Tipo 1' : 'Tipo 2';
+                profileBadge += ` + Diabetes ${diabetesType}`;
+                
+                diabetesRec = `
+                    <h3><i class="fas fa-file-medical"></i> Recomendações Específicas para Diabetes ${diabetesType}</h3>
+                    <p>O exercício físico é fundamental para o controle glicêmico. Segundo o Ministério da Saúde:</p>
+                    <ul>
+                        <li><strong>Monitoramento:</strong> Verifique a glicemia antes, durante e após exercícios intensos</li>
+                        <li><strong>Hidratação:</strong> Beba água regularmente durante a atividade</li>
+                        <li><strong>Alimentação:</strong> Tenha carboidratos de rápida absorção disponíveis durante o exercício</li>
+                        <li><strong>Frequência:</strong> Pratique atividade física regularmente, pelo menos 5 dias/semana</li>
+                        <li><strong>Intensidade:</strong> Prefira exercícios de intensidade moderada (60-70% da frequência cardíaca máxima)</li>
+                        ${diabetes === 'type1' ? 
+                            '<li><strong>Insulina:</strong> Ajuste as doses com orientação médica, especialmente em atividades prolongadas</li>' : 
+                            '<li><strong>Resistência insulínica:</strong> Exercícios regulares melhoram a sensibilidade à insulina</li>'}
+                    </ul>
+                    <p><strong>Alimentação para diabetes:</strong></p>
+                    <ul>
+                        <li>Controle rigoroso da ingestão de carboidratos</li>
+                        <li>Prefira carboidratos complexos e de baixo índice glicêmico (aveia, batata-doce, legumes)</li>
+                        <li>Distribua as refeições em 5-6 refeições menores ao longo do dia</li>
+                        <li>Consuma fibras solúveis (aveia, maçã, leguminosas) para auxiliar no controle glicêmico</li>
+                        <li>Evite açúcares simples e bebidas açucaradas</li>
+                    </ul>
+                `;
+                
+                profileDesc += `<p>Você relatou ter diabetes ${diabetesType}, o que requer cuidados específicos durante a atividade física e na alimentação.</p>`;
+            }
+            
+            // Atualizar a badge do perfil
+            document.getElementById('profile-badge').textContent = profileBadge;
+            
+            // Exibir resultados
+            document.getElementById('profile-description').innerHTML = profileDesc;
+            document.getElementById('exercise-recommendation').innerHTML = exerciseRec;
+            document.getElementById('diet-recommendation').innerHTML = dietRec;
+            document.getElementById('diabetes-recommendation').innerHTML = diabetesRec;
+            
+            // Mostrar seção de resultados
+            document.getElementById('result-section').style.display = 'block';
+            
+            // Mostrar botão de reset
+            document.getElementById('reset-btn').style.display = 'block';
+            
+            // Rolar para os resultados
+            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Botão de reset
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            // Resetar formulário
+            document.getElementById('exercise-form').reset();
+            
+            // Esconder resultados
+            document.getElementById('result-section').style.display = 'none';
+            
+            // Esconder botão de reset
+            this.style.display = 'none';
+            
+            // Rolar para o topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
