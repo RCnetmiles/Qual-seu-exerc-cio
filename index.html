@@ -1,624 +1,936 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Herança Genética - Entrevista Clínica</title>
+    <title>HerediDraw</title>
     <style>
         :root {
-            --primary-color: #007bff;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --background-color: #f8f9fa;
-            --card-background: #ffffff;
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --shadow: rgba(0,0,0,0.1);
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: var(--background-color);
-            color: #343a40;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
             line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: auto;
-            background: var(--card-background);
+            min-height: 100vh;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
-
-        h1 {
-            color: var(--primary-color);
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
             text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 10px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
         }
-
-        .header-info {
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .app-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        
+        .tools-panel {
+            flex: 0 0 280px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .tools-panel h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .tool-group {
+            margin-bottom: 25px;
+        }
+        
+        .tool-group h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .tool-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .tool-btn {
+            background-color: var(--light);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 12px 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .tool-btn:hover {
+            background-color: #d6e4f0;
+        }
+        
+        .tool-btn.active {
+            border-color: var(--secondary);
+            background-color: #d6eaf8;
+        }
+        
+        .symbol-preview {
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .canvas-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+        }
+        
+        .canvas-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-        }
-
-        .case-info, .question-counter {
-            font-weight: bold;
-        }
-
-        .section-box {
-            border: 1px solid #ced4da;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-        }
-
-        .section-box h2 {
-            margin-top: 0;
-            color: var(--secondary-color);
-            font-size: 1.2em;
-        }
-
-        .question-list {
-            display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 15px;
         }
-
+        
+        .canvas-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
         .btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s, transform 0.1s;
-        }
-
-        .btn-question {
-            background-color: var(--primary-color);
-            color: white;
-            flex-grow: 1; /* Permite que os botões se expandam */
-            min-width: 200px; /* Garante que não fiquem muito pequenos */
-        }
-
-        .btn-question:hover:not(:disabled) {
-            background-color: #0056b3;
-        }
-        
-        .btn-question:disabled {
-            background-color: #a0c4ff;
-            cursor: not-allowed;
-        }
-
-        .btn-hint {
-            background-color: var(--warning-color);
-            color: #343a40;
-            margin-top: 10px;
-        }
-
-        .btn-hint:hover {
-            background-color: #e0a800;
-        }
-
-        .btn-submit {
-            background-color: var(--success-color);
-            color: white;
             padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
         }
-
-        .btn-submit:hover {
-            background-color: #1e7e34;
-        }
-
-        .btn-next {
-            background-color: var(--secondary-color);
+        
+        .btn-primary {
+            background-color: var(--secondary);
             color: white;
         }
-
-        .btn-next:hover {
-            background-color: #5a6268;
-        }
-
-        #answer-log {
-            margin-top: 10px;
-            padding: 15px;
-            background-color: #f1f1f1;
-            border-radius: 4px;
-            max-height: 300px;
-            overflow-y: auto;
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
         }
         
-        .log-entry {
-            margin-bottom: 8px;
-            padding-bottom: 5px;
-            border-bottom: 1px dotted #ccc;
-        }
-
-        .hint-text {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            border-radius: 4px;
-            display: none;
-        }
-
-        .feedback-text {
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .feedback-correct {
-            background-color: #d4edda;
-            color: var(--success-color);
-            border: 1px solid #c3e6cb;
-        }
-
-        .feedback-incorrect {
-            background-color: #f8d7da;
-            color: var(--danger-color);
-            border: 1px solid #f5c6cb;
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
         }
         
-        /* Estilização da tabela de heredograma simulada */
-        #pedigree-table {
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-light {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .btn-light:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .canvas-wrapper {
+            position: relative;
             width: 100%;
-            border-collapse: collapse;
+            flex: 1;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+        
+        #pedigreeCanvas {
+            display: block;
+            cursor: crosshair;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .legend h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-symbol {
+            width: 24px;
+            height: 24px;
+            border: 1px solid var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        footer {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 30px;
+            padding: 20px;
+            color: var(--primary);
+            font-size: 0.9rem;
         }
-        #pedigree-table th, #pedigree-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
+        
+        @media (max-width: 900px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .tools-panel {
+                position: static;
+                width: 100%;
+            }
+            
+            .canvas-container {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
         }
-        #pedigree-table th {
-            background-color: #e9ecef;
-            color: var(--secondary-color);
+        
+        @media (max-width: 480px) {
+            .tool-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .canvas-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .canvas-controls {
+                width: 100%;
+            }
+            
+            .btn {
+                flex: 1;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>🧬 Simulador de Herança Genética</h1>
+        <header>
+            <h1>HerediDraw - Editor de Heredograma</h1>
+            <p class="subtitle">Desenhe seu heredograma usando símbolos padrão da genética!🧬 </p>
+        </header>
         
-        <div class="header-info">
-            <div class="case-info" id="case-info">Caso Atual: 1 de 5</div>
-            <div class="question-counter" id="question-counter">Perguntas Usadas: 0/10</div>
-        </div>
-
-        <div class="section-box">
-            <h2>❓ Entrevista Clínica e Histórico Familiar (Max 10 perguntas)</h2>
-            <p id="patient-intro"></p>
-            
-            <div class="question-list" id="question-list">
+        <div class="app-container">
+            <div class="tools-panel">
+                <h2>Ferramentas</h2>
+                
+                <div class="tool-group">
+                    <h3>Indivíduos</h3>
+                    <div class="tool-buttons">
+                        <div class="tool-btn active" data-tool="male">
+                            <div class="symbol-preview">♂</div>
+                            <span>Homem</span>
+                        </div>
+                        <div class="tool-btn" data-tool="female">
+                            <div class="symbol-preview">♀</div>
+                            <span>Mulher</span>
+                        </div>
+                        <div class="tool-btn" data-tool="unknown">
+                            <div class="symbol-preview">?</div>
+                            <span>Sexo Desconhecido</span>
+                        </div>
+                    </div>
                 </div>
-
-            <div class="hint-container">
-                <button class="btn btn-hint" id="hint-btn">Revelar Dica (1/3)</button>
-                <button class="btn btn-hint" id="hint-btn2" style="display:none;">Revelar Dica (2/3)</button>
-                <button class="btn btn-hint" id="hint-btn3" style="display:none;">Revelar Dica (3/3)</button>
+                
+                <div class="tool-group">
+                    <h3>Status</h3>
+                    <div class="tool-buttons">
+                        <div class="tool-btn" data-tool="affected">
+                            <div class="symbol-preview" style="background-color: #333; color: white;">A</div>
+                            <span>Afetado</span>
+                        </div>
+                        <div class="tool-btn" data-tool="carrier">
+                            <div class="symbol-preview" style="background-color: #ddd;">C</div>
+                            <span>Portador</span>
+                        </div>
+                        <div class="tool-btn" data-tool="deceased">
+                            <div class="symbol-preview">†</div>
+                            <span>Falecido</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-group">
+                    <h3>Relações</h3>
+                    <div class="tool-buttons">
+                        <div class="tool-btn" data-tool="line">
+                            <div class="symbol-preview" style="border: none;">—</div>
+                            <span>Linha</span>
+                        </div>
+                        <div class="tool-btn" data-tool="union">
+                            <div class="symbol-preview" style="border: none;">═</div>
+                            <span>União</span>
+                        </div>
+                        <div class="tool-btn" data-tool="offspring">
+                            <div class="symbol-preview" style="border: none;">↓</div>
+                            <span>Linha de Descendência</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-group">
+                    <h3>Ações</h3>
+                    <div class="tool-buttons">
+                        <div class="tool-btn" data-tool="select">
+                            <div class="symbol-preview" style="border: none;">↦</div>
+                            <span>Selecionar/Mover</span>
+                        </div>
+                        <div class="tool-btn" data-tool="delete">
+                            <div class="symbol-preview" style="border: none; color: var(--accent);">✕</div>
+                            <span>Excluir</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <h3>Legenda dos Símbolos</h3>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <div class="legend-symbol">♂</div>
+                            <span>Indivíduo masculino</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-symbol">♀</div>
+                            <span>Indivíduo feminino</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-symbol" style="background-color: #333; color: white;">A</div>
+                            <span>Indivíduo afetado</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-symbol" style="background-color: #ddd;">C</div>
+                            <span>Portador assintomático</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-symbol">†</div>
+                            <span>Indivíduo falecido</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="hint-text" id="hint-text"></div>
-
-            <div id="answer-log">
-                <strong>Log da Entrevista (Histórico Familiar):</strong>
+            <div class="canvas-container">
+                <div class="canvas-header">
+                    <h2>Área de Desenho</h2>
+                    <div class="canvas-controls">
+                        <button class="btn btn-light" id="clearBtn">Limpar Tudo</button>
+                        <button class="btn btn-primary" id="saveBtn">Salvar Heredograma</button>
+                    </div>
+                </div>
+                
+                <div class="canvas-wrapper">
+                    <canvas id="pedigreeCanvas">
+                        Seu navegador não suporta o elemento canvas.
+                    </canvas>
+                </div>
             </div>
         </div>
-
-        <div class="section-box">
-            <h2>📄 Heredograma Deduzido (Simulação Visual)</h2>
-            <p>Com base nas respostas obtidas, construa mentalmente o heredograma. A tabela abaixo resume o histórico familiar crucial revelado.</p>
-            <table id="pedigree-table">
-                <thead>
-                    <tr>
-                        <th>Relação</th>
-                        <th>Status</th>
-                        <th>Gen.</th>
-                    </tr>
-                </thead>
-                <tbody id="pedigree-body">
-                    </tbody>
-            </table>
-        </div>
-
-        <div class="section-box">
-            <h2>✅ Diagnóstico de Herança</h2>
-            <p>Selecione o padrão de herança que você deduziu:</p>
-            <div class="diagnosis-form">
-                <select id="diagnosis-select">
-                    <option value="">-- Selecione uma opção --</option>
-                    <option value="Autossômica Dominante">1. Autossômica Dominante (AD)</option>
-                    <option value="Autossômica Recessiva">2. Autossômica Recessiva (AR)</option>
-                    <option value="Ligada ao X Dominante">3. Ligada ao X Dominante (X D)</option>
-                    <option value="Ligada ao X Recessiva">4. Ligada ao X Recessiva (X R)</option>
-                    <option value="Mitocondrial">5. Mitocondrial</option>
-                </select>
-                <button class="btn btn-submit" onclick="submitDiagnosis()">Submeter Diagnóstico</button>
-            </div>
-        </div>
-
-        <div class="section-box" id="feedback-area" style="display: none;">
-            <h2>Feedback</h2>
-            <div id="feedback-text" class="feedback-text"></div>
-            <button class="btn btn-next" id="next-case-btn" onclick="nextCase()">Próximo Caso (ou Reiniciar)</button>
-        </div>
-
+        
+        <footer>
+            <p>Editor de Heredograma &copy; 2023 - Ferramenta para desenho de pedigree charts em genética médica</p>
+        </footer>
     </div>
 
     <script>
-        // --- Dados dos Casos Clínicos (A "Inteligência" do Sistema) ---
-        const cases = [
-            // Caso 1: Autossômica Dominante
-            {
-                id: 1,
-                patient: "João, 35 anos, afetado (Homem)",
-                inheritance: "Autossômica Dominante",
-                pedigreeSummary: [
-                    { rel: "Pai", status: "Não Afetado", gen: "II" },
-                    { rel: "Mãe", status: "Afetada", gen: "II" },
-                    { rel: "Irmã (F)", status: "Afetada", gen: "III" },
-                    { rel: "Irmão (M)", status: "Não Afetado", gen: "III" },
-                    { rel: "Filho", status: "Afetado", gen: "IV" },
-                    { rel: "Filha", status: "Não Afetada", gen: "IV" },
-                ],
-                data: {
-                    "pais-afetados": "O pai é Não Afetado, mas a mãe é Afetada (transmissão vertical).",
-                    "irmaos": "O paciente tem 1 irmã afetada e 1 irmão não afetado.",
-                    "filhos": "O paciente (afetado) tem 2 filhos afetados e 1 filha não afetada.",
-                    "generations": "O traço está presente em múltiplas gerações consecutivas (transmissão vertical).",
-                    "transmissao-pai-filho": "Não há transmissão de pai para filho homem neste caso, mas o traço afeta ambos os sexos, sugerindo que o alelo não está ligado ao Y.",
-                    "sexo-afetado": "Afeta homens e mulheres na mesma proporção.",
-                    "consanguinidade": "Não há histórico de consanguinidade.",
-                    "filhas-pai": "A mãe afetada transmite para filhos de ambos os sexos.",
-                },
-                hints: [
-                    "Sinais-chave: **Transmissão Vertical** (todas as gerações).",
-                    "A afetação ocorre em **ambos os sexos** e, frequentemente, 50% dos filhos de um progenitor afetado são afetados.",
-                    "Doença: **Polidactilia**."
-                ],
-                explanation: "Correto! **Autossômica Dominante (AD)**. A transmissão vertical (não salta gerações) e a afetação de ambos os sexos, com um progenitor afetado tendo filhos afetados, são características de AD. [Image of Autosomal Dominant Pedigree]"
-            },
-            // Caso 2: Autossômica Recessiva
-            {
-                id: 2,
-                patient: "Maria, 28 anos, afetada (Mulher)",
-                inheritance: "Autossômica Recessiva",
-                pedigreeSummary: [
-                    { rel: "Pai", status: "Não Afetado (Portador)", gen: "II" },
-                    { rel: "Mãe", status: "Não Afetada (Portadora)", gen: "II" },
-                    { rel: "Irmã (F)", status: "Não Afetada", gen: "III" },
-                    { rel: "Irmão (M)", status: "Afetado", gen: "III" },
-                    { rel: "Avós", status: "Não Afetados", gen: "I" },
-                ],
-                data: {
-                    "pais-afetados": "Os pais da paciente são **Não Afetados** (mas são portadores).",
-                    "irmaos": "A paciente tem um irmão afetado e uma irmã não afetada.",
-                    "filhos": "A paciente não tem filhos.",
-                    "generations": "O traço **'saltou' gerações** (nenhum dos pais é afetado) - Transmissão Horizontal.",
-                    "transmissao-pai-filho": "Não se aplica, pois os pais não são afetados.",
-                    "sexo-afetado": "Afeta homens e mulheres igualmente.",
-                    "consanguinidade": "Não há registro, mas a possibilidade é maior neste padrão.",
-                    "filhas-pai": "Ambos os pais não afetados tiveram filhos afetados (probabilidade de 25% por filho)."
-                },
-                hints: [
-                    "Sinais-chave: **Transmissão Horizontal** ('salta' gerações).",
-                    "Pais **não afetados** (portadores) têm filhos afetados (25% de chance).",
-                    "Doença: **Fibrose Cística**."
-                ],
-                explanation: "Correto! **Autossômica Recessiva (AR)**. O padrão de 'salto' de gerações (pais não afetados tendo filhos afetados) e a afetação de ambos os sexos são as marcas da AR. [Image of Autosomal Recessive Pedigree]"
-            },
-            // Caso 3: Ligada ao X Recessiva
-            {
-                id: 3,
-                patient: "Pedro, 12 anos, afetado (Homem)",
-                inheritance: "Ligada ao X Recessiva",
-                pedigreeSummary: [
-                    { rel: "Pai", status: "Não Afetado", gen: "II" },
-                    { rel: "Mãe", status: "Não Afetada (Portadora)", gen: "II" },
-                    { rel: "Tio Materno", status: "Afetado", gen: "II" },
-                    { rel: "Prima Materna", status: "Não Afetada (Portadora)", gen: "III" },
-                ],
-                data: {
-                    "pais-afetados": "O pai é Não Afetado. A mãe é Não Afetada, mas é **Portadora**.",
-                    "irmaos": "Pedro não tem irmãos afetados, mas tem um tio materno afetado.",
-                    "filhos": "Não se aplica.",
-                    "generations": "Aparece nos tios e no paciente (o gene passou pela mãe/avó portadora).",
-                    "transmissao-pai-filho": "**Nunca** há transmissão de pai afetado para filho homem (o pai passa o cromossomo Y).",
-                    "sexo-afetado": "Afeta **quase exclusivamente homens**.",
-                    "consanguinidade": "Não há histórico.",
-                    "filhas-pai": "Um pai afetado terá todas as filhas portadoras (não afetadas, se a mãe não for afetada)."
-                },
-                hints: [
-                    "Sinais-chave: Afeta **principalmente homens**.",
-                    "Transmissão de **mãe portadora para o filho**.",
-                    "Doença: **Hemofilia**."
-                ],
-                explanation: "Correto! **Ligada ao X Recessiva (X R)**. O padrão de afetar quase exclusivamente homens, a transmissão por mães portadoras e a ausência de transmissão de pai para filho homem são cruciais para este diagnóstico. [Image of X-linked Recessive Pedigree]"
-            },
-            // Caso 4: Mitocondrial
-            {
-                id: 4,
-                patient: "Ana, 40 anos, afetada (Mulher)",
-                inheritance: "Mitocondrial",
-                pedigreeSummary: [
-                    { rel: "Pai", status: "Não Afetado", gen: "II" },
-                    { rel: "Mãe", status: "Afetada", gen: "II" },
-                    { rel: "Irmã (F)", status: "Afetada", gen: "III" },
-                    { rel: "Irmão (M)", status: "Não Afetado", gen: "III" },
-                    { rel: "Filhos (M)", status: "Afetados", gen: "IV" },
-                    { rel: "Filhas (F)", status: "Afetadas", gen: "IV" },
-                ],
-                data: {
-                    "pais-afetados": "O pai é Não Afetado. A mãe é **Afetada**.",
-                    "irmaos": "A paciente tem uma irmã afetada e um irmão **não afetado** (embora a mãe seja afetada).",
-                    "filhos": "A paciente (afetada) tem 3 filhos e 3 filhas, **TODOS afetados**.",
-                    "generations": "Presente em todas as gerações, mas **apenas via linha materna**.",
-                    "transmissao-pai-filho": "**Nunca** há transmissão por pais afetados (apenas mitocôndrias maternas são passadas).",
-                    "sexo-afetado": "Afeta ambos os sexos, mas **somente a mãe transmite**.",
-                    "consanguinidade": "Não relevante.",
-                    "filhas-pai": "Pais afetados não transmitem o traço."
-                },
-                hints: [
-                    "Sinais-chave: Transmissão **EXCLUSIVAMENTE Materna**.",
-                    "Uma mãe afetada transmite o traço para **TODOS os seus filhos** (homens e mulheres).",
-                    "Doença: **Miopatia Mitocondrial**."
-                ],
-                explanation: "Correto! **Mitocondrial**. O critério definidor é a transmissão exclusiva pela mãe para todos os seus descendentes, enquanto o pai afetado não transmite a condição. [Image of Mitochondrial Pedigree]"
-            },
-            // Caso 5: Ligada ao X Dominante
-            {
-                id: 5,
-                patient: "Sofia, 8 anos, afetada (Mulher)",
-                inheritance: "Ligada ao X Dominante",
-                pedigreeSummary: [
-                    { rel: "Pai", status: "Não Afetado", gen: "II" },
-                    { rel: "Mãe", status: "Afetada", gen: "II" },
-                    { rel: "Avó Materna", status: "Afetada", gen: "I" },
-                    { rel: "Irmã (F)", status: "Afetada", gen: "III" },
-                    { rel: "Irmão (M)", status: "Não Afetado", gen: "III" },
-                ],
-                data: {
-                    "pais-afetados": "O pai é Não Afetado. A mãe é **Afetada**.",
-                    "irmaos": "A paciente tem uma irmã afetada e um irmão não afetado.",
-                    "filhos": "Não se aplica.",
-                    "generations": "Transmissão vertical, com a avó materna também afetada.",
-                    "transmissao-pai-filho": "Um pai afetado **transmite a TODAS as suas filhas**, mas a **NENHUM dos seus filhos**.",
-                    "sexo-afetado": "Afeta **mais mulheres** que homens.",
-                    "consanguinidade": "Não relevante.",
-                    "filhas-pai": "Se o pai fosse afetado, todas as filhas seriam afetadas."
-                },
-                hints: [
-                    "Sinais-chave: Afeta **mais mulheres** que homens e é vertical.",
-                    "Regra de Ouro: Um pai afetado transmite a doença a **TODAS as filhas**.",
-                    "Doença: **Síndrome de Rett** (comum ser letal em homens homozigotos)."
-                ],
-                explanation: "Correto! **Ligada ao X Dominante (X D)**. A transmissão vertical (não salta gerações), o fato de afetar mais mulheres e a regra de que o pai afetado passa o traço para todas as filhas são decisivos. [Image of X-linked Dominant Pedigree]"
-            }
-        ];
-
-        let currentCaseIndex = 0;
-        let questionsUsed = 0;
-        let hintLevel = 0;
-        let questionsAsked = {}; // Rastreia chaves de perguntas já usadas
-
-        // Estrutura de perguntas pré-definidas (o 'vocabulário' do usuário)
-        const questionTemplates = [
-            { q: "Qual o status de afetação dos pais do paciente?", key: "pais-afetados" },
-            { q: "O paciente tem irmãos? Qual o status de afetação deles?", key: "irmaos" },
-            { q: "O paciente tem filhos? Qual o status de afetação deles?", key: "filhos" },
-            { q: "O traço aparece em todas as gerações (Transmissão Vertical)?", key: "generations" },
-            { q: "Existe transmissão de pai afetado para filho homem afetado?", key: "transmissao-pai-filho" },
-            { q: "O padrão de afetação é exclusivo ou majoritário em um sexo?", key: "sexo-afetado" },
-            { q: "Existe histórico de consanguinidade na família?", key: "consanguinidade" },
-            { q: "Como um pai afetado transmite o traço para filhas versus filhos?", key: "filhas-pai" },
-        ];
-
-        // --- Funções de Inicialização e Controle de Caso ---
-
-        function loadCase(index) {
-            currentCaseIndex = index;
-            questionsUsed = 0;
-            hintLevel = 0;
-            questionsAsked = {};
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('pedigreeCanvas');
+            const ctx = canvas.getContext('2d');
+            const toolButtons = document.querySelectorAll('.tool-btn');
+            const clearBtn = document.getElementById('clearBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const canvasWrapper = document.querySelector('.canvas-wrapper');
             
-            if (index >= cases.length) {
-                alert("Parabéns! Você completou todos os 5 casos de herança genética. Reiniciando a simulação.");
-                loadCase(0);
-                return;
-            }
-
-            const currentCase = cases[currentCaseIndex];
+            // Estado da aplicação
+            let currentTool = 'male';
+            let isDrawing = false;
+            let startX, startY;
+            let elements = [];
+            let selectedElement = null;
+            let dragOffsetX = 0, dragOffsetY = 0;
             
-            // Atualizar informações do cabeçalho
-            document.getElementById('case-info').textContent = `Caso Atual: ${index + 1} de ${cases.length}`;
-            document.getElementById('patient-intro').innerHTML = `O paciente é **${currentCase.patient}**. Você tem até 10 perguntas para deduzir o padrão de herança.`;
-            updateQuestionCounter();
-
-            // Resetar áreas
-            document.getElementById('answer-log').innerHTML = '<strong>Log da Entrevista (Histórico Familiar):</strong>';
-            document.getElementById('hint-text').style.display = 'none';
-            document.getElementById('hint-text').textContent = '';
-            
-            // Mostrar e reativar botões de dica
-            document.getElementById('hint-btn').style.display = 'inline';
-            document.getElementById('hint-btn').textContent = 'Revelar Dica (1/3)';
-            document.getElementById('hint-btn2').style.display = 'none';
-            document.getElementById('hint-btn3').style.display = 'none';
-            
-            document.getElementById('feedback-area').style.display = 'none';
-            document.getElementById('diagnosis-select').value = '';
-            
-            // Carregar perguntas
-            loadQuestions();
-            // Renderizar heredograma simulado
-            renderPedigreeSummary();
-        }
-
-        function updateQuestionCounter() {
-            document.getElementById('question-counter').textContent = `Perguntas Usadas: ${questionsUsed}/10`;
-            
-            const questionButtons = document.querySelectorAll('.btn-question');
-            questionButtons.forEach(btn => {
-                const key = btn.getAttribute('data-key');
-                // Desativa se o limite foi atingido ou se a pergunta já foi feita
-                btn.disabled = questionsUsed >= 10 || questionsAsked[key];
+            // Configurar ferramentas
+            toolButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    toolButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTool = this.getAttribute('data-tool');
+                    selectedElement = null;
+                });
             });
-        }
-
-        function loadQuestions() {
-            const questionList = document.getElementById('question-list');
-            questionList.innerHTML = '';
-            questionTemplates.forEach((template) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn btn-question';
-                btn.textContent = template.q;
-                btn.setAttribute('data-key', template.key);
-                btn.onclick = () => askQuestion(template.key, btn);
-                questionList.appendChild(btn);
-            });
-        }
-        
-        // --- Funções de Interação (Perguntas e Dicas) ---
-
-        function askQuestion(key, button) {
-            if (questionsUsed >= 10 || questionsAsked[key]) return;
-
-            const currentCase = cases[currentCaseIndex];
-            const answer = currentCase.data[key];
-
-            const log = document.getElementById('answer-log');
-            const questionText = button.textContent;
             
-            // Adicionar ao log
-            const newLogEntry = document.createElement('p');
-            newLogEntry.className = 'log-entry';
-            newLogEntry.innerHTML = `**${questionsUsed + 1}. P:** ${questionText}<br> &nbsp; &nbsp; **R:** ${answer}`;
-            log.appendChild(newLogEntry);
-            log.scrollTop = log.scrollHeight; // Scroll para baixo
-
-            // Marcar pergunta como usada e contar
-            questionsAsked[key] = true;
-            questionsUsed++;
-            updateQuestionCounter();
-
-            // Desativar a pergunta feita
-            button.disabled = true;
-        }
-
-        function showHint() {
-            const currentCase = cases[currentCaseIndex];
-            const hintText = document.getElementById('hint-text');
+            // Inicializar canvas
+            function initCanvas() {
+                resizeCanvas();
+                drawGrid();
+            }
             
-            if (hintLevel < currentCase.hints.length) {
-                hintLevel++;
+            // Redimensionar canvas para caber no container
+            function resizeCanvas() {
+                const rect = canvasWrapper.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                redrawCanvas();
+            }
+            
+            // Eventos do canvas
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Eventos de toque para dispositivos móveis - CÓDIGO CORRIGIDO
+            let lastTouchX = 0;
+            let lastTouchY = 0;
+            
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
                 
-                // Mostrar as dicas até o nível atual
-                let currentHints = '';
-                for (let i = 0; i < hintLevel; i++) {
-                    currentHints += `<p>💡 **Dica ${i + 1}:** ${currentCase.hints[i]}</p>`;
+                lastTouchX = (touch.clientX - rect.left) * scaleX;
+                lastTouchY = (touch.clientY - rect.top) * scaleY;
+                
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY,
+                    bubbles: true
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+            
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                lastTouchX = (touch.clientX - rect.left) * scaleX;
+                lastTouchY = (touch.clientY - rect.top) * scaleY;
+                
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY,
+                    bubbles: true
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+            
+            canvas.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                
+                // Usar as últimas coordenadas conhecidas do touchmove
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                // Criar um objeto de evento com as últimas coordenadas válidas
+                const fakeEvent = {
+                    clientX: (lastTouchX / scaleX) + rect.left,
+                    clientY: (lastTouchY / scaleY) + rect.top
+                };
+                
+                // Chamar stopDrawing diretamente com o evento fake
+                const rect2 = canvas.getBoundingClientRect();
+                const scaleX2 = canvas.width / rect2.width;
+                const scaleY2 = canvas.height / rect2.height;
+                
+                const x = (fakeEvent.clientX - rect2.left) * scaleX2;
+                const y = (fakeEvent.clientY - rect2.top) * scaleY2;
+                
+                if (isDrawing) {
+                    if (currentTool === 'select') {
+                        isDrawing = false;
+                    } else if (['line', 'union', 'offspring'].includes(currentTool)) {
+                        elements.push({
+                            type: currentTool,
+                            x1: startX,
+                            y1: startY,
+                            x2: x,
+                            y2: y
+                        });
+                        isDrawing = false;
+                        redrawCanvas();
+                    } else {
+                        elements.push({
+                            type: currentTool,
+                            x: startX,
+                            y: startY
+                        });
+                        isDrawing = false;
+                        redrawCanvas();
+                    }
                 }
+            });
+            
+            // Botões de ação
+            clearBtn.addEventListener('click', clearCanvas);
+            saveBtn.addEventListener('click', saveCanvas);
+            
+            // Redimensionar canvas quando a janela for redimensionada
+            window.addEventListener('resize', function() {
+                resizeCanvas();
+            });
+            
+            // Funções de desenho
+            function startDrawing(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
                 
-                hintText.innerHTML = currentHints;
-                hintText.style.display = 'block';
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
                 
-                // Gerenciar botões de dica
-                const totalHints = currentCase.hints.length;
-                
-                document.getElementById('hint-btn').style.display = hintLevel < 1 ? 'inline' : 'none';
-                document.getElementById('hint-btn2').style.display = hintLevel === 1 && totalHints > 1 ? 'inline' : 'none';
-                document.getElementById('hint-btn3').style.display = hintLevel === 2 && totalHints > 2 ? 'inline' : 'none';
-
-                // Atualizar texto do próximo botão de dica, se houver
-                if (hintLevel < totalHints) {
-                    const nextBtn = document.getElementById(`hint-btn${hintLevel === 0 ? '' : (hintLevel + 1)}`);
-                    if(nextBtn) nextBtn.textContent = `Revelar Dica (${hintLevel + 1}/${totalHints})`;
+                if (currentTool === 'select') {
+                    // Verificar se clicou em um elemento existente
+                    selectedElement = getElementAtPosition(x, y);
+                    if (selectedElement) {
+                        dragOffsetX = x - selectedElement.x;
+                        dragOffsetY = y - selectedElement.y;
+                        isDrawing = true;
+                    }
+                } else if (currentTool === 'delete') {
+                    // Excluir elemento
+                    const element = getElementAtPosition(x, y);
+                    if (element) {
+                        elements = elements.filter(el => el !== element);
+                        redrawCanvas();
+                    }
+                } else {
+                    // Iniciar desenho de novo elemento
+                    isDrawing = true;
+                    startX = x;
+                    startY = y;
                 }
             }
-        }
-        
-        // Atribuir a função showHint ao clique dos botões de dica
-        document.getElementById('hint-btn').onclick = showHint;
-        document.getElementById('hint-btn2').onclick = showHint;
-        document.getElementById('hint-btn3').onclick = showHint;
-
-
-        // --- Funções de Heredograma Simplificado (Tabela) ---
-        
-        function renderPedigreeSummary() {
-            const pedigreeBody = document.getElementById('pedigree-body');
-            pedigreeBody.innerHTML = '';
             
-            const currentCase = cases[currentCaseIndex];
-
-            if (currentCase.pedigreeSummary.length === 0) {
-                pedigreeBody.innerHTML = '<tr><td colspan="3">Ainda não há dados familiares cruciais revelados. Faça perguntas!</td></tr>';
-                return;
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+                
+                if (currentTool === 'select' && selectedElement) {
+                    // Mover elemento selecionado
+                    selectedElement.x = x - dragOffsetX;
+                    selectedElement.y = y - dragOffsetY;
+                    redrawCanvas();
+                } else if (['line', 'union', 'offspring'].includes(currentTool)) {
+                    // Desenhar linha temporária
+                    redrawCanvas();
+                    drawTemporaryLine(startX, startY, x, y);
+                }
             }
-
-            currentCase.pedigreeSummary.forEach(member => {
-                const row = pedigreeBody.insertRow();
-                row.insertCell().textContent = member.rel;
-                row.insertCell().textContent = member.status;
-                row.insertCell().textContent = member.gen;
-            });
-        }
-
-
-        // --- Funções de Diagnóstico e Feedback ---
-
-        function submitDiagnosis() {
-            const selectedDiagnosis = document.getElementById('diagnosis-select').value;
-            const feedbackArea = document.getElementById('feedback-area');
-            const feedbackText = document.getElementById('feedback-text');
-            const currentCase = cases[currentCaseIndex];
             
-            feedbackArea.style.display = 'block';
-
-            if (selectedDiagnosis === currentCase.inheritance) {
-                feedbackText.className = 'feedback-text feedback-correct';
-                feedbackText.innerHTML = `✅ **Diagnóstico Correto!** O padrão de herança é **${currentCase.inheritance}**. <br><br> ${currentCase.explanation}`;
-                document.getElementById('next-case-btn').textContent = currentCaseIndex < cases.length - 1 ? 'Próximo Caso' : 'Reiniciar Simulação';
-            } else {
-                feedbackText.className = 'feedback-text feedback-incorrect';
-                feedbackText.innerHTML = `❌ **Diagnóstico Incorreto.** Você selecionou **${selectedDiagnosis || 'Nenhum'}**. <br><br> Para ${currentCase.inheritance}, as evidências cruciais são: ${currentCase.hints.join(', ')}. <br><br> **Continue a Análise ou Use uma Dica.**`;
-                document.getElementById('next-case-btn').textContent = 'Continuar Análise'; // Não avança para o próximo caso em erro
+            function stopDrawing(e) {
+                if (!isDrawing) return;
+                
+                // Se não houver evento (no caso de touchend), usar valores padrão
+                let x, y;
+                
+                if (e && e.clientX !== undefined && e.clientY !== undefined) {
+                    const rect = canvas.getBoundingClientRect();
+                    const scaleX = canvas.width / rect.width;
+                    const scaleY = canvas.height / rect.height;
+                    
+                    x = (e.clientX - rect.left) * scaleX;
+                    y = (e.clientY - rect.top) * scaleY;
+                } else {
+                    // Usar as últimas coordenadas conhecidas
+                    x = startX;
+                    y = startY;
+                }
+                
+                if (currentTool === 'select') {
+                    isDrawing = false;
+                } else if (['line', 'union', 'offspring'].includes(currentTool)) {
+                    elements.push({
+                        type: currentTool,
+                        x1: startX,
+                        y1: startY,
+                        x2: x,
+                        y2: y
+                    });
+                    isDrawing = false;
+                    redrawCanvas();
+                } else {
+                    elements.push({
+                        type: currentTool,
+                        x: startX,
+                        y: startY
+                    });
+                    isDrawing = false;
+                    redrawCanvas();
+                }
             }
-        }
-
-        function nextCase() {
-            const feedbackText = document.getElementById('feedback-text');
-            const isCorrect = feedbackText.classList.contains('feedback-correct');
             
-            if (isCorrect) {
-                loadCase(currentCaseIndex + 1);
-            } else {
-                // Se a resposta for incorreta, limpa o feedback e permite continuar a análise
-                document.getElementById('feedback-area').style.display = 'none';
+            function drawTemporaryLine(x1, y1, x2, y2) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                
+                if (currentTool === 'union') {
+                    ctx.setLineDash([5, 5]);
+                } else if (currentTool === 'offspring') {
+                    // Desenhar linha com seta
+                    drawArrow(x1, y1, x2, y2);
+                    ctx.setLineDash([]);
+                    return;
+                } else {
+                    ctx.setLineDash([]);
+                }
+                
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.setLineDash([]);
             }
-        }
-
-
-        // --- Inicialização ---
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCase(0);
+            
+            function drawArrow(x1, y1, x2, y2) {
+                const headlen = 10;
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const angle = Math.atan2(dy, dx);
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(x2, y2);
+                ctx.lineTo(x2 - headlen * Math.cos(angle - Math.PI/6), y2 - headlen * Math.sin(angle - Math.PI/6));
+                ctx.moveTo(x2, y2);
+                ctx.lineTo(x2 - headlen * Math.cos(angle + Math.PI/6), y2 - headlen * Math.sin(angle + Math.PI/6));
+                ctx.stroke();
+            }
+            
+            function getElementAtPosition(x, y) {
+                for (let i = elements.length - 1; i >= 0; i--) {
+                    const element = elements[i];
+                    
+                    if (['male', 'female', 'unknown', 'affected', 'carrier', 'deceased'].includes(element.type)) {
+                        // Verificar se o clique está dentro do símbolo
+                        const size = 20;
+                        if (x >= element.x - size && x <= element.x + size && 
+                            y >= element.y - size && y <= element.y + size) {
+                            return element;
+                        }
+                    } else if (['line', 'union', 'offspring'].includes(element.type)) {
+                        // Verificar proximidade com a linha (simplificado)
+                        const dx = element.x2 - element.x1;
+                        const dy = element.y2 - element.y1;
+                        const length = Math.sqrt(dx*dx + dy*dy);
+                        const dot = ((x - element.x1) * dx + (y - element.y1) * dy) / (length * length);
+                        
+                        if (dot > 0 && dot < 1) {
+                            const closestX = element.x1 + dot * dx;
+                            const closestY = element.y1 + dot * dy;
+                            const distance = Math.sqrt((x - closestX) * (x - closestX) + (y - closestY) * (y - closestY));
+                            
+                            if (distance < 5) {
+                                return element;
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+            
+            function redrawCanvas() {
+                // Limpar canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Desenhar grade de fundo
+                drawGrid();
+                
+                // Desenhar todos os elementos
+                elements.forEach(element => {
+                    drawElement(element);
+                });
+                
+                // Destacar elemento selecionado
+                if (selectedElement) {
+                    drawElement(selectedElement, true);
+                }
+            }
+            
+            function drawGrid() {
+                const gridSize = 20;
+                ctx.strokeStyle = '#e0e0e0';
+                ctx.lineWidth = 0.5;
+                
+                // Linhas verticais
+                for (let x = 0; x <= canvas.width; x += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
+                
+                // Linhas horizontais
+                for (let y = 0; y <= canvas.height; y += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.stroke();
+                }
+            }
+            
+            function drawElement(element, isSelected = false) {
+                const size = Math.min(20, canvas.width / 40); // Tamanho adaptativo
+                
+                ctx.strokeStyle = isSelected ? '#e74c3c' : '#2c3e50';
+                ctx.lineWidth = isSelected ? 3 : 2;
+                ctx.fillStyle = '#ffffff';
+                
+                switch (element.type) {
+                    case 'male':
+                        // Quadrado para homem
+                        ctx.fillRect(element.x - size, element.y - size, size * 2, size * 2);
+                        ctx.strokeRect(element.x - size, element.y - size, size * 2, size * 2);
+                        
+                        // Símbolo masculino
+                        ctx.fillStyle = '#2c3e50';
+                        ctx.font = `bold ${size}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('♂', element.x, element.y);
+                        break;
+                        
+                    case 'female':
+                        // Círculo para mulher
+                        ctx.beginPath();
+                        ctx.arc(element.x, element.y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        
+                        // Símbolo feminino
+                        ctx.fillStyle = '#2c3e50';
+                        ctx.font = `bold ${size}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('♀', element.x, element.y);
+                        break;
+                        
+                    case 'unknown':
+                        // Losango para sexo desconhecido
+                        ctx.beginPath();
+                        ctx.moveTo(element.x, element.y - size);
+                        ctx.lineTo(element.x + size, element.y);
+                        ctx.lineTo(element.x, element.y + size);
+                        ctx.lineTo(element.x - size, element.y);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        
+                        // Ponto de interrogação
+                        ctx.fillStyle = '#2c3e50';
+                        ctx.font = `bold ${size}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('?', element.x, element.y);
+                        break;
+                        
+                    case 'affected':
+                        // Quadrado preenchido para afetado
+                        ctx.fillStyle = '#2c3e50';
+                        ctx.fillRect(element.x - size, element.y - size, size * 2, size * 2);
+                        ctx.strokeRect(element.x - size, element.y - size, size * 2, size * 2);
+                        
+                        // Símbolo masculino (em branco)
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = `bold ${size}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('♂', element.x, element.y);
+                        break;
+                        
+                    case 'carrier':
+                        // Círculo com ponto para portador
+                        ctx.beginPath();
+                        ctx.arc(element.x, element.y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        
+                        // Ponto no centro
+                        ctx.fillStyle = '#2c3e50';
+                        ctx.beginPath();
+                        ctx.arc(element.x, element.y, size/3, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                        
+                    case 'deceased':
+                        // Círculo com cruz para falecido
+                        ctx.beginPath();
+                        ctx.arc(element.x, element.y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        
+                        // Cruz
+                        ctx.strokeStyle = '#e74c3c';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(element.x - size/2, element.y - size/2);
+                        ctx.lineTo(element.x + size/2, element.y + size/2);
+                        ctx.moveTo(element.x + size/2, element.y - size/2);
+                        ctx.lineTo(element.x - size/2, element.y + size/2);
+                        ctx.stroke();
+                        break;
+                        
+                    case 'line':
+                        // Linha simples
+                        ctx.beginPath();
+                        ctx.moveTo(element.x1, element.y1);
+                        ctx.lineTo(element.x2, element.y2);
+                        ctx.strokeStyle = '#2c3e50';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        break;
+                        
+                    case 'union':
+                        // Linha dupla para união
+                        ctx.beginPath();
+                        ctx.moveTo(element.x1, element.y1 - 2);
+                        ctx.lineTo(element.x2, element.y2 - 2);
+                        ctx.moveTo(element.x1, element.y1 + 2);
+                        ctx.lineTo(element.x2, element.y2 + 2);
+                        ctx.strokeStyle = '#2c3e50';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        break;
+                        
+                    case 'offspring':
+                        // Linha com seta para descendência
+                        drawArrow(element.x1, element.y1, element.x2, element.y2);
+                        break;
+                }
+            }
+            
+            function clearCanvas() {
+                if (confirm('Tem certeza que deseja limpar todo o heredograma?')) {
+                    elements = [];
+                    selectedElement = null;
+                    redrawCanvas();
+                }
+            }
+            
+            function saveCanvas() {
+                const link = document.createElement('a');
+                link.download = 'heredograma.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+            
+            // Inicializar o canvas
+            initCanvas();
         });
-
     </script>
-
 </body>
 </html>
